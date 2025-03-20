@@ -51,10 +51,10 @@ module top;
    // -----------------
 
     wire      clk;      // System clock
-    reg       reset;    // spyglass disable W402b // System reset
-    reg       half_speed_clk;
+    reg       reset = 1'b1;    // spyglass disable W402b // System reset
+    reg       half_speed_clk = 1'b0;
     wire      mem_clk;
-    reg       mem_clk_fast;
+    reg       mem_clk_fast = 1'b0;
 
    // -----------------
    // AXI WIRE DECL 
@@ -309,28 +309,30 @@ module top;
    // Generated clocks
    // --------------------------
 
-   reg        msc_clk_ip;
-	reg turn_off_assert_clk_tp;
+   reg        msc_clk_ip = 1'b0;
 
 `ifdef EMU_TB
 
 `else
  	initial begin
-		turn_off_assert_clk_tp = $test$plusargs("turn_off_assert_clk");
-		reset = 1'b0;
-		half_speed_clk = 1'b0;
-		msc_clk_ip = 1'b0;
-		mem_clk_fast = 1'b0;
-
-		repeat (1000) @ (clk);
-		reset = 1'b1;
+    if ($test$plusargs("dumpty")) begin
+      $dumpfile("dump.vcd");
+      $dumpvars;
+    end
+    reset = 1'b0;
+    repeat (100) @ (clk);
+    reset = 1'b1;
+    repeat (10) @ (clk);
+    reset = 1'b0;
+    repeat (1000) @ (clk);
+    reset = 1'b1;
 	end
 
 
 	always #(simulation_cycle/2) msc_clk_ip = ~msc_clk_ip;
 	always #(simulation_cycle_mem/2) mem_clk_fast = ~mem_clk_fast;
 
-	assign clk = (turn_off_assert_clk_tp) ? 0 : msc_clk_ip;
+	assign clk = msc_clk_ip;
 
 	always @ (posedge clk) begin
 		half_speed_clk <= ~half_speed_clk;

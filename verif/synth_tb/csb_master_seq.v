@@ -119,7 +119,7 @@ always @(posedge clk or negedge reset) begin
       read_reg_poll_interval <= config_mem[`MSEQ_POLL_INTERVAL];
       read_timeout <= config_mem[`MSEQ_RD_TIMEOUT];
       write_timeout <= config_mem[`MSEQ_WR_TIMEOUT];
-      write_timeout <= config_mem[`MSEQ_INTR_TIMEOUT];
+      wait_timeout <= config_mem[`MSEQ_INTR_TIMEOUT];
       continue_on_fail <= config_mem[`MSEQ_CONT_ON_FAIL][0];
       curr_cmd_polls <= config_mem[`MSEQ_RD_POLLS];
       cs <= MSEQ_BOOT_1;
@@ -270,7 +270,7 @@ always @* begin
 `ifdef ZEBU
          top.dollar_finish = 1'b1;
 `else
-         #500ns;
+         //#500ns;
          $finish; //spyglass disable W213
 `endif
       end

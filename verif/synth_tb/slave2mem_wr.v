@@ -152,7 +152,7 @@ always @* begin
 `ifdef EMU_TB
 // AS - Not required
 `else
-   if( q2mem_curr_wr_addr > (`MEM_SIZE-1) && reset ) begin
+   if( q2mem_curr_wr_addr > (`MEM_SIZE-1) && q2mem_write_q_tail_valid && reset ) begin
       $display("%0t SMEM: ERROR: Slave %0d wrote the last address in memory, which doesn't exist due to VCS limitations.", $time, AXI_SLAVE_ID);
       $finish;
    end

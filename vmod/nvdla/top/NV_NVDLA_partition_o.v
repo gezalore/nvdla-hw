@@ -1705,7 +1705,7 @@ NV_NVDLA_core_reset u_sync_core_reset (
   ,.direct_reset_                  (direct_reset_)                  //|< i
   ,.test_mode                      (test_mode)                      //|< i
   ,.synced_rstn                    (nvdla_core_rstn)                //|> o
-  ,.core_reset_rstn                (1'b1)                           //|< ?
+  ,.core_reset_rstn                (dla_reset_rstn)                 //|< ?
   ,.nvdla_clk                      (nvdla_core_clk)                 //|< i
   );
     //D &Connect core_reset_rstn  core_reset_rstn;
