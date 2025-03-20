@@ -393,10 +393,10 @@ show_plusargs :
 
 #TODO - pick one . right now 2013.06 can drop upsched and vcsevalorder
 # VCS_TIMING_ARGS  := +nospecify +notimingchecks +udpsched +vcsevalorder +define+VLIB_NO_UDP
-VCS_TIMING_ARGS  := +nospecify +notimingchecks +define+VLIB_NO_UDP
-VCS_OK_WARNINGS  := +warn=noTFIPC +warn=noTMR
+VCS_TIMING_ARGS  := 
+VCS_OK_WARNINGS  := 
 
-VCS_64BIT_ARGS   := -full64
+VCS_64BIT_ARGS   := 
 
 ifeq ($(DUMP),1)
   ifeq ($(DUMPER),SILOTI)
@@ -421,13 +421,14 @@ VCS_ARGS     := ${DEFFILE} \
 		${VCS_OK_WARNINGS} \
 		${VCS_64BIT_ARGS} \
 		${TB_VCS_BLD_ARGS} \
-		+vcs+lic+wait \
-		-sverilog \
 		+libext+.v \
 		+libext+.sv \
-		-timescale=1ns/1ns \
-		-debug_all \
+		-timescale 1ns/1ns \
                 +define+NVTOOLS_SYNC2D_GENERIC_CELL \
+								+define+NO_PLI_OR_EMU \
+								+define+NO_PLI \
+								+define+DESIGNWARE_NOEXIST \
+								+define+SYNTHESIS \
 		+define+NO_PERFMON_HISTOGRAM \
 		+define+PRAND_OFF \
 
@@ -463,14 +464,15 @@ all:    build regress
 #	${QUIET}${TB_PREP} ; \
 
 # Run the compiled simulation
-run: ${COMPILELOG} ${VCS_EXECUTABLE}
+run: # ${COMPILELOG} ${VCS_EXECUTABLE}
 	${TB_PREP} ; \
 	${RM} -f ${SYNTHINPUTVECTORS} ; \
 	${RM} -f *.raw2 ; \
 	${RM} -f ${VCS_LOGFILE} ; \
 	${SYNTHCFGGEN} ${PLUSARGS} ${DEFAULT_PLUSARGS}; \
 	${SYNTHINPVECGEN} ${SIMTESTDIR} ; \
-	${LSF_COMMAND} ${VCS_EXECUTABLE} -l ${VCS_LOGFILE} ${PLUSARGS} ${TESTDIR_PLUSARGS_ONE} ${DEFAULT_PLUSARGS} ${DUMP_ARGS} +input_file=${SIMTESTDIR}/${INPUTVECTORS} +input_dir=${SIMTESTDIR} ; \
+	pwd; \
+	../obj_dir/Vtop ${PLUSARGS} ${TESTDIR_PLUSARGS_ONE} ${DEFAULT_PLUSARGS} ${DUMP_ARGS} +input_file=${SIMTESTDIR}/${INPUTVECTORS} +input_dir=${SIMTESTDIR} | tee $(VCS_LOGFILE) ; \
 	${CHECKTEST} ./$(TESTLOG); \
 	${ECHO} " " ; \
 	${ECHO} "NVINFO : ===============================================================" ; \
@@ -581,7 +583,7 @@ ${VCS_EXECUTABLE}:
 	${LSF_COMMAND} $(VCS_HOME)/bin/vcs -f ${DUTFILE} -Xddg=0x1 -o ${VCS_EXECUTABLE} -cpp ${VCS_CC} ${VCS_ARGS} ${VERDI_PLI} ${TB_FILES} -l ${COMPILELOG} ${DUT_DEFINES} ${VERDI_LD_FLAGS} ${VCS_PARTIION_ARGS}
 
 build : dut
-	${LSF_COMMAND} $(VCS_HOME)/bin/vcs -f ${DUTFILE} -Xddg=0x1 -o ${VCS_EXECUTABLE} -cpp ${VCS_CC} ${VCS_ARGS} ${VERDI_PLI} ${TB_FILES} -l ${COMPILELOG} ${DUT_DEFINES} ${VERDI_LD_FLAGS} ${VCS_PARTIION_ARGS} -Mdir=${VCS_EXECUTABLE}Csrc ; ./checkcompile.pl ${COMPILELOG} ${VCS_EXECUTABLE}
+	${LSF_COMMAND} verilator --top top --autoflush --main --build --exe --timing --build-jobs 16  -CFLAGS -O0 -CFLAGS -g3 --trace -f ${DUTFILE} ${VCS_ARGS} ${VERDI_PLI} ${TB_FILES} ${DUT_DEFINES} ${VERDI_LD_FLAGS} ${VCS_PARTIION_ARGS} -Wno-BLKANDNBLK -Wno-fatal 
 
 # Build dumper
 dumper:  vericom esa
