@@ -805,24 +805,24 @@ output [3:0] RD;
     // weclk with posedge 1 dly | negedge 2 dly	
     wire weclk, weclk_d0, weclk_d1, weclk_d2;
     assign weclk_d0 = clk_w_iddq & we_lat & ~clobber_flops & ~clobber_array;
-    assign #1 weclk_d1 = weclk_d0;
-    assign #1 weclk_d2 = weclk_d1;
+    assign weclk_d1 = weclk_d0;
+    assign weclk_d2 = weclk_d1;
     assign weclk = weclk_d1 | weclk_d2; // spyglass disable GatedClock
 
     // wadclk with posedge 0 dly | negedge 3 dly	
     wire wadclk, wadclk_d0, wadclk_d1, wadclk_d2, wadclk_d3;
     assign wadclk_d0 = clk_w_iddq & we_lat;
-    assign #1 wadclk_d1 = wadclk_d0;
-    assign #1 wadclk_d2 = wadclk_d1;
-    assign #1 wadclk_d3 = wadclk_d2;
+    assign wadclk_d1 = wadclk_d0;
+    assign wadclk_d2 = wadclk_d1;
+    assign wadclk_d3 = wadclk_d2;
     assign wadclk = wadclk_d0 | wadclk_d1 | wadclk_d2 | wadclk_d3;  
 
     // wdclk with posedge 0 dly | negedge 3 dly
     wire wdclk, wdclk_d0, wdclk_d1, wdclk_d2, wdclk_d3;
     assign wdclk_d0 = clk_w_iddq & we_lat;
-    assign #1 wdclk_d1 = wdclk_d0;
-    assign #1 wdclk_d2 = wdclk_d1;
-    assign #1 wdclk_d3 = wdclk_d2;
+    assign wdclk_d1 = wdclk_d0;
+    assign wdclk_d2 = wdclk_d1;
+    assign wdclk_d3 = wdclk_d2;
     assign wdclk = wdclk_d0 | wdclk_d1 | wdclk_d2 | wdclk_d3;  
 
     reg [7:0] wa_lat;
@@ -850,13 +850,13 @@ output [3:0] RD;
     // reclk with posedge 1 dly | negedge 0 dly
     wire reclk, reclk_d0, reclk_d1;
     assign reclk_d0 = CLK_R & ~IDDQ & re_lat & ~clamp_o;
-    assign #1 reclk_d1 = reclk_d0;
+    assign reclk_d1 = reclk_d0;
     assign reclk = reclk_d0 & reclk_d1; // spyglass disable GatedClock
 
     // radclk with posedge 0 dly | negedge 1 dly
     wire radclk, radclk_d0, radclk_d1;
     assign radclk_d0 = CLK_R & ~IDDQ & re_lat & ~clamp_o;
-    assign #1 radclk_d1 = radclk_d0;
+    assign radclk_d1 = radclk_d0;
     assign radclk = radclk_d0 | radclk_d1;  
 
 	reg [7:0] ra_lat;
@@ -1086,7 +1086,7 @@ end
 
 
     wire r0_clk_d0p1, r0_clk_read, r0_clk_reset_collision;
-    assign #0.1 r0_clk_d0p1 = r0_clk;
+    assign r0_clk_d0p1 = r0_clk;
     assign r0_clk_read = r0_clk_d0p1 & r0_clk; // spyglass disable GatedClock
     assign r0_clk_reset_collision = r0_clk | r0_clk_d0p1; // spyglass disable W402b
 
