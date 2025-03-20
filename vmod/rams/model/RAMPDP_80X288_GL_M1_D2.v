@@ -769,7 +769,7 @@ endtask
  
 // Latch the enables
 //spyglass disable_block IntClock,W18 
-    always @(*) begin 
+    always @(CLK or RE or WE) begin 
         if (!CLK) begin
             RE_LAT <= RE; 
             WE_LAT <= WE; 
@@ -858,7 +858,7 @@ input RET_EN , clobber_array , clobber_flops ;
 
 // Latch and flop the primary control enables. This is on the unconditional clock.
 // spyglass disable_block W18
-	always @(*) begin
+	always @(latffclk or clobber_flops or RE or WE) begin
     // Latch part 
 		if(!latffclk & !clobber_flops) begin
             RE_LATB     <= ~RE ;
@@ -867,7 +867,7 @@ input RET_EN , clobber_array , clobber_flops ;
 		end // end if
 	end // end always
 
-	always @(*) begin
+	always @(latffclk or clobber_flops or WE_LATB or RE_LATB) begin
     // Flop part
 		if (latffclk & !clobber_flops) begin
         // Flop outputs of the latches above
@@ -906,7 +906,7 @@ input RET_EN , clobber_array , clobber_flops ;
 
 // Latch read addresses
 // spyglass disable_block W18
-	always @(*) begin
+	always @(RADRCLK or clobber_flops or RA) begin
 		if(!RADRCLK & !clobber_flops) begin
 			RADR <= RA;
 		end // end if
