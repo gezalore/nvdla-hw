@@ -668,7 +668,7 @@ output [5:0] RD;
 	//common part for write
     wire clk_w_iddq = CLK_W & ~IDDQ & ~clamp_o;
 	reg we_lat;
-	always @(*) begin
+	always @(clk_w_iddq or clobber_flops or WE) begin
 		if (!clk_w_iddq & !clobber_flops) begin
 			we_lat  <=  WE; // spyglass disable W18, IntClock
 		end
@@ -698,14 +698,14 @@ output [5:0] RD;
     assign wdclk = wdclk_d0 | wdclk_d1 | wdclk_d2 | wdclk_d3;  
 
     reg [6:0] wa_lat;
-	always @(*) begin
+	always @(wadclk or clobber_flops or WA) begin
 		if (!wadclk & !clobber_flops) begin
 			wa_lat  <=  WA; // spyglass disable W18, IntClock
 		end
 	end
 
 	reg [5:0] wd_lat;
-	always @(*) begin
+	always @(wdclk or clobber_flops or WD) begin
 		if (!wdclk & !clobber_flops) begin
 			wd_lat  <= WD; // spyglass disable W18, IntClock
 		end
@@ -713,7 +713,7 @@ output [5:0] RD;
 
 	//common part for read
 	reg re_lat;
-	always @(*) begin
+	always @(CLK_R or clobber_flops or RE) begin
 		if (!CLK_R & !clobber_flops) begin
 			re_lat <=  RE; // spyglass disable W18, IntClock
 		end
@@ -732,7 +732,7 @@ output [5:0] RD;
     assign radclk = radclk_d0 | radclk_d1;  
 
 	reg [6:0] ra_lat;
-	always @(*) begin
+	always @(radclk or clobber_flops or RA) begin
 		if (!radclk & !clobber_flops) begin
 			ra_lat <=  RA; // spyglass disable W18, IntClock
 		end
@@ -1005,13 +1005,17 @@ end
 	reg [bits-1:0] r0_dout_tmp;
 	always @(*)
 	begin
-	    if (r0_clk_read) begin
             for (a=0; a<bits; a=a+1) begin
-                r0_dout_tmp[a] <= ( collision_ff[a] | (r0_addr==w0_addr & w0_clk & bwe_with_fault[a]) ) ? 1'bx : r0_arr[a] & ~clamp_o; //spyglass disable STARC-2.10.1.6, W18
+                r0_dout_tmp[a] = ( collision_ff[a] | (r0_addr==w0_addr & w0_clk & bwe_with_fault[a]) ) ? 1'bx : r0_arr[a] & ~clamp_o; //spyglass disable STARC-2.10.1.6, W18
             end
-        end
     end
-    wire [bits-1:0] r0_dout = r0_dout_tmp & {bits{~clamp_o}};
+    reg [bits-1:0] r0_dout_tmp2;
+    always @(r0_dout_tmp or r0_clk_read) begin
+      if (r0_clk_read) begin
+        r0_dout_tmp2 <= r0_dout_tmp;
+      end
+    end
+    wire [bits-1:0] r0_dout = r0_dout_tmp2 & {bits{~clamp_o}};
 
 `ifndef SYNTHESIS
 //VCS coverage off
