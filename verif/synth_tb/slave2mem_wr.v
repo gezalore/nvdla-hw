@@ -59,6 +59,7 @@ assign q2mem_write_q_tail_valid = s_write_q[s_write_tail][`WR_VALID];
 
 initial begin
    $readmemh("slave_mem.cfg", config_mem);
+   for (int i = 0; i < `QUEUE_SIZE; ++i) s_write_q[i] = '0;
 end
 
 always @(posedge clk or negedge reset) begin

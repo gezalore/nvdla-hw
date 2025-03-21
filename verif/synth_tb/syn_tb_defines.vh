@@ -54,37 +54,8 @@
  ************* SYNTH MEMORY RELATED ******************
  *****************************************************/ 
 
-// Added by Nathan
-//`define ZEBU 1
-`ifdef ZEBU
-   `define NO_PERFMON_HISTOGRAM 1
-   `define NO_DUMPS 1
-   `define MEM_WIDTH_32B
-   `define EMU_TB
-`else
-   // NOTE: If changing the memory width define, you MUST also change the word size in synth_tb/sim_scripts/inp_txn_to_hexdump.pl!!!
-   `define MEM_WIDTH_4B
-`endif
-
-`ifdef CADENCE
-   `define EMU_TB
-`endif
-
-
-`ifdef MEM_WIDTH_32B
-   `define MEM_WIDTH   256
-   `ifdef ZEBU
-      `define MEM_SIZE    (2**25)
-      `define ZRM_CHANGE_BYTES   (`MEM_BYTES/8)
-      `define ZRM_LOG2_MEM    ($clog2((`MEM_WIDTH/8))-3)
-   `else
-      `define MEM_SIZE    (2**25 - 1)
-   `endif
-`endif
-`ifdef MEM_WIDTH_4B
-   `define MEM_WIDTH   32
-   `define MEM_SIZE    (2**28 - 1)
-`endif
+`define MEM_WIDTH   32
+`define MEM_SIZE    64'((2**28))
 
 `define MEM_BYTES   (`MEM_WIDTH/8)
 `define LOG2_MEM    ($clog2(`MEM_WIDTH)-3)
@@ -100,7 +71,6 @@
 `define DLA_ADDR_MASK      `AXI_ADDR_WIDTH'hffff_ffff_f000_0000
 
 `define DLA_CLOCK_DIVIDE              2
-`define DLATB_S2M_CHANNEL_COUNT       1
 
 // Define offsets inside the config_mem to find these configuration parameters
 `define MSEQ_CONFIG_SIZE      32

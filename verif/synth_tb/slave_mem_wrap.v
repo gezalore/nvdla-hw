@@ -2,7 +2,6 @@
 // Wrapper for the two AXI slaves and the memory module
 module syn_slave_mem_wrap (
     clk,
-    fast_clk,
     reset,
 
     saxi2nvdla_axi_slave0_arready                ,
@@ -79,7 +78,6 @@ module syn_slave_mem_wrap (
 );
 
 input   clk;
-input   fast_clk;
 input   reset;
 
 output                                saxi2nvdla_axi_slave0_arready         ;
@@ -302,8 +300,7 @@ wire            axi_clk                ;
   );
 
   slave_mem #(`DBB_ADDR_START, `DBB_MEM_SIZE) dbb_mem (
-    .clk                    (fast_clk)
-   ,.slow_clk               (clk)
+    .clk                    (clk)
    ,.reset                  (reset)
 
    ,.slave2mem_cmd_wr       (saxi02mem_cmd_wr)
@@ -324,8 +321,7 @@ wire            axi_clk                ;
   );
 
 slave_mem #(`CVSRAM_ADDR_START, `CVSRAM_MEM_SIZE) cvsram_mem (
-    .clk                    (fast_clk)
-   ,.slow_clk               (clk)
+    .clk                    (clk)
    ,.reset                  (reset)
  
    ,.slave2mem_cmd_wr       (saxi12mem_cmd_wr)

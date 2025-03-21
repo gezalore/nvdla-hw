@@ -189,19 +189,7 @@ else
 		VCS_LOGFILE    := ${TESTLOG}
 		NOT_TOP_TB_FILES := ${TBDIR}/csb_master.v \
 		    ${TBDIR}/csb_master_seq.v \
-		    ${TBDIR}/axi_slave.v \
-		    ${TBDIR}/id_fifo.v \
-		    ${TBDIR}/memory.v \
-		    ${TBDIR}/memresp_fifo.v \
-		    ${TBDIR}/raddr_fifo.v \
-		    ${TBDIR}/slave_mem_wrap.v \
-		    ${TBDIR}/waddr_fifo.v \
-		    ${TBDIR}/wdata_fifo.v \
-		    ${TBDIR}/wstrb_fifo.v \
-		    ${TBDIR}/clk_divider.v \
-		    ${TBDIR}/slave2mem_rd.v \
-		    ${TBDIR}/slave2mem_wr.v \
-                    ${DWFILES}
+		    ${TBDIR}/axi_memory.v
 		TB_FILES       := ${TBDIR}/tb_top.v ${NOT_TOP_TB_FILES}
 
                 #Two step way to ensure we don't create a lower higherarchy with new files
