@@ -140,14 +140,14 @@ if (-e $log) {
 
    my $dumpdiff_passed = 1;
    my $dumpdiff_string = "";
-   my @dump_files = glob("$testdir/*chiplib_dump.raw2");
+   my @dump_files = glob("$testdir/mem-expect-*.hex");
    my $dump_files_size=@dump_files;
-   print "Warning: could not find any golden $testdir/*chiplib_dump.raw2\n" unless $dump_files_size;
+   print "Warning: could not find any golden $testdir/mem-expect*.hex\n" unless $dump_files_size;
    if ($dump_files_size) {
        foreach(@dump_files) {
           chomp($_);
           my $replay_file = $_;
-          $replay_file =~s/chiplib_dump/chiplib_replay/;
+          $replay_file =~s/mem-expect/mem-dump/;
           if(!(-e $replay_file)) { 
               $dumpdiff_passed = 0;
               $dumpdiff_string .= "Did not find dump file $replay_file, could not compare. ";

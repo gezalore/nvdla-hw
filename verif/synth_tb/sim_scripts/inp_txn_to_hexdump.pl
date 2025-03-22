@@ -193,7 +193,7 @@ while(<$inf>)
       my $minf, my $mouf;
       if($values[0] =~ /load_mem/) {
          #Convert loaded file to the appropriate width of the memory
-         $raw_file = $load_file_counter . ".raw2";
+         $raw_file = "mem-in-". $load_file_counter . ".hex";
          $mem_out = $raw_file;
          
          open $minf, "<". "$test_dir/$mem_in";
@@ -203,10 +203,10 @@ while(<$inf>)
       } else {
          #Convert chiplib_dump file to the appropriate width of the memory so it can be compared
          #directly to the dumped chiplib_replay file
-         $raw_file = $dump_file_counter . ".chiplib_replay.raw2";
+         $raw_file = "mem-dump-".$dump_file_counter . ".hex";
          $mem_in =~ s/chiplib_replay/chiplib_dump/g;
          $mem_out = $raw_file;
-         $mem_out =~ s/chiplib_replay/chiplib_dump/g;
+         $mem_out =~ s/dump/expect/g;
          
          open $minf, "<". "$test_dir/$mem_in";
          open $mouf, ">". $mem_out;
